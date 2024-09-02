@@ -1,7 +1,5 @@
+### This is a school project, not a real project!
 # Lernfeld-10
-
-###
-This is a school project, not a real project!
 
 ## Our Problem
 As an IT service provider with hundreds of customers, we currently have no monitoring in place for their services. Recently, due to issues with CrowdStrike and other factors, we have experienced several outages.
