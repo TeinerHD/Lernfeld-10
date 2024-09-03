@@ -31,5 +31,7 @@ jobs:
         working-directory: ./terraform
 
       - name: Output VM Public IP
-        run: echo "VM IP: $(terraform output vm_public_ip)"
+        run: |
+          VM_IP=$(terraform output -raw vm_public_ip)
+          echo "VM IP: $VM_IP"
         working-directory: ./terraform
