@@ -21,7 +21,7 @@ resource "azurerm_subnet" "main" {
   address_prefixes     = ["10.0.1.0/24"]
 }
 
-resource "azurerm_network_interface" "main" {
+resource "azurerm_network_interface" "main_secondary" {
   name                = "zabbix-nic"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
@@ -88,8 +88,4 @@ os_profile {
   provisioner "local-exec" {
     command = "ansible-playbook -i '${self.public_ip_address},' --user zabbixadmin --extra-vars 'ansible_password=${var.admin_password}' ansible_playbook.yml"
   }
-}
-
-output "vm_public_ip" {
-  value = azurerm_public_ip.main.ip_address
 }
