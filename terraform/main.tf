@@ -86,6 +86,6 @@ os_profile {
   }
 
   provisioner "local-exec" {
-    command = "ansible-playbook -i '${self.public_ip_address},' --user zabbixadmin --extra-vars 'ansible_password=${var.admin_password}' ansible_playbook.yml"
+    command = "ansible-playbook -i '${azurerm_public_ip.main.ip_address},' --user zabbixadmin --extra-vars 'ansible_password=${var.admin_password}' ansible_playbook.yml"
   }
 }
