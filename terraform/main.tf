@@ -40,6 +40,7 @@ resource "proxmox_vm_qemu" "almalinux_vm" {
 
   # Use AlmaLinux ISO or Template (you need to have this on Proxmox)
   clone = "Template"  # or use an ISO for installation
+  clone_wait   = 30
   
   # Cloud-init Configuration
   ipconfig0 = "ip=dhcp"  # Use DHCP for network configuration
