@@ -17,7 +17,7 @@ provider "proxmox" {
 resource "proxmox_vm_qemu" "almalinux_vm" {
   count    = 1
   name     = "zabbixvm"
-  target_node = "LF10-Proxmox"  # Proxmox node where the VM will be deployed
+  target_node = "Debian-bookworm-latest-amd64-base"  # Proxmox node where the VM will be deployed
 
   # General VM Configuration
   cores    = 2
