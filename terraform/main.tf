@@ -41,6 +41,7 @@ resource "proxmox_vm_qemu" "almalinux_vm" {
   # Use AlmaLinux ISO or Template (you need to have this on Proxmox)
   clone = "Template"  # or use an ISO for installation
   clone_wait   = 30
+  additional_wait = 20
 
   # Automatically start the VM after creation
   onboot = true
