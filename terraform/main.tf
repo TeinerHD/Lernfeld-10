@@ -47,9 +47,9 @@ resource "proxmox_vm_qemu" "almalinux_vm" {
   ciuser    = "zabbix"  # Default user for AlmaLinux cloud images
   cipassword = "password"  # Password for the user
   
-#  sshkeys = <<EOF
-# ssh-rsa AAAAB...your-ssh-public-key... sabaton@your-machine
-# EOF
+  sshkeys = <<EOF
+ ssh-rsa AAAAB...your-ssh-public-key... sabaton@your-machine
+ EOF
 
   # Automatically start the VM after creation
   onboot = true
