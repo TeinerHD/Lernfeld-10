@@ -7,3 +7,7 @@ As an IT service provider with hundreds of customers, we currently have no monit
 
 ## Our Solution
 Our customers need monitoring, and we plan to use Zabbix for this purpose. To avoid setting up Zabbix manually hundreds of times, we intend to automate the deployment using Terraform and Ansible. This will allow us to quickly establish monitoring for our customers and enable us to rebuild the monitoring servers rapidly if needed.
+
+## Lab
+If you want to try it yourself we have a step-by-step manual in our repository.
+Just take a look in our pdf files.
