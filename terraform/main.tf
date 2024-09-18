@@ -44,5 +44,5 @@ resource "proxmox_vm_qemu" "almalinux_vm" {
   additional_wait = 20
 
   # Automatically start the VM after creation
-  onboot = true
+  #onboot = true
 }
