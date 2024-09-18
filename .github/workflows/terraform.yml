@@ -26,12 +26,8 @@ jobs:
       - name: Terraform Apply
         id: apply
         env:
-          TF_VAR_admin_password: ${{ secrets.AZURE_VM_ADMIN_PASSWORD }}
+          TF_VAR_proxmox_url: ${{ secrets.PROXMOX_URL }}
+          TF_VAR_proxmox_user: ${{ secrets.PROXMOX_USER }}
+          TF_VAR_proxmox_password: ${{ secrets.PROXMOX_PASS }}
         run: terraform apply -auto-approve
-        working-directory: ./terraform
-
-      - name: Output VM Public IP
-        run: |
-          VM_IP=$(terraform output -raw vm_public_ip)
-          echo "VM IP: $VM_IP"
         working-directory: ./terraform

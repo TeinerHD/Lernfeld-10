@@ -1,91 +1,47 @@
-provider "azurerm" {
-  features {}
+provider "proxmox" {
+  pm_api_url      = var.proxmox_url
+  pm_user         = var.proxmox_user
+  pm_password     = var.proxmox_password
+  pm_tls_insecure = true  # Set to true if you don't use TLS certificates
 }
 
-resource "azurerm_resource_group" "main" {
-  name     = "zabbix-rg"
-  location = "Germany North"
-}
+resource "proxmox_vm_qemu" "almalinux_vm" {
+  count    = 1
+  name     = "zabbixvm"
+  target_node = "LF10-Proxmox"  # Proxmox node where the VM will be deployed
 
-resource "azurerm_virtual_network" "main" {
-  name                = "zabbix-vnet"
-  address_space       = ["10.0.0.0/16"]
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-}
+  # General VM Configuration
+  cores    = 2
+  memory   = 4096
+  sockets  = 1
+  cpu      = "host"
 
-resource "azurerm_subnet" "main" {
-  name                 = "zabbix-subnet"
-  resource_group_name  = azurerm_resource_group.main.name
-  virtual_network_name = azurerm_virtual_network.main.name
-  address_prefixes     = ["10.0.1.0/24"]
-}
-
-resource "azurerm_network_interface" "main_secondary" {
-  name                = "zabbix-nic"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-
-  ip_configuration {
-    name                          = "internal"
-    subnet_id                     = azurerm_subnet.main.id
-    private_ip_address_allocation = "Dynamic"
-  }
-}
-
-resource "azurerm_public_ip" "main" {
-  name                = "zabbix-pip"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-  allocation_method   = "Dynamic"
-}
-
-resource "azurerm_network_interface" "main" {
-  name                = "zabbix-nic"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-
-  ip_configuration {
-    name                          = "internal"
-    subnet_id                     = azurerm_subnet.main.id
-    private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.main.id
-  }
-}
-
-resource "azurerm_virtual_machine" "main" {
-  name                  = "zabbix-vm"
-  location              = azurerm_resource_group.main.location
-  resource_group_name   = azurerm_resource_group.main.name
-  network_interface_ids = [azurerm_network_interface.main.id]
-  vm_size               = "Standard_B1s"
-
-  storage_image_reference {
-      publisher = "Canonical"
-      offer     = "0001-com-ubuntu-server-jammy"
-      sku       = "22_04-lts"
-      version   = "latest"
+  # Storage and Disk Configuration
+  disk {
+    size            = "8G"
+    type            = "scsi"
+    storage         = "local-lvm"  # Name of your Proxmox storage pool
+    storage_type    = "lvm"
   }
 
-
-  storage_os_disk {
-    name              = "zabbix-os-disk"
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Standard_LRS"
+  # Network Configuration
+  network {
+    model    = "virtio"
+    bridge   = "vmbr0"  # Your network bridge in Proxmox
   }
 
-os_profile {
-  computer_name  = "zabbixvm"
-  admin_username = "zabbixadmin"
-  admin_password = var.admin_password
-}
+  # Use AlmaLinux ISO or Template (you need to have this on Proxmox)
+  clone = "Template"  # or use an ISO for installation
+  
+  # Cloud-init Configuration
+  ipconfig0 = "ip=dhcp"  # Use DHCP for network configuration
+  ciuser    = "zabbix"  # Default user for AlmaLinux cloud images
+  cipassword = "password"  # Password for the user
+  
+  sshkeys = <<EOF
+ssh-rsa AAAAB...your-ssh-public-key... sabaton@your-machine
+EOF
 
-  os_profile_linux_config {
-    disable_password_authentication = false
-  }
-
-  provisioner "local-exec" {
-    command = "ansible-playbook -i '${azurerm_public_ip.main.ip_address},' --user zabbixadmin --extra-vars 'ansible_password=${var.admin_password}' ansible_playbook.yml"
-  }
+  # Automatically start the VM after creation
+  onboot = true
 }
