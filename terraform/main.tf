@@ -30,7 +30,6 @@ resource "proxmox_vm_qemu" "almalinux_vm" {
     size            = "8G"
     type            = "scsi"
     storage         = "local-lvm"  # Name of your Proxmox storage pool
-    storage_type    = "lvm"
   }
 
   # Network Configuration
