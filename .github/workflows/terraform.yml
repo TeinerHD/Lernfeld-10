@@ -1,4 +1,4 @@
-name: Terraform Azure Deployment
+name: Terraform Proxmox Deployment
 
 on:
   push:
