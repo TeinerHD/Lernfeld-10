@@ -1,5 +1,5 @@
 variable "proxmox_url" {
-  description = "The admin password for the Proxmox"
+  description = "The url for the Proxmox"
   type        = string
   sensitive   = true
 }
