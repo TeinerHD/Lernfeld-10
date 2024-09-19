@@ -4,6 +4,10 @@ terraform {
       source  = "telmate/proxmox"
       version = ">= 2.9.14"
     }
+    random = {
+      source = "hashicorp/random"
+      version = ">= 3.0.0"
+    }
   }
 }
 
@@ -14,9 +18,16 @@ provider "proxmox" {
   pm_tls_insecure = true  # Set to true if you don't use TLS certificates
 }
 
+# Random string for VM name
+resource "random_string" "vm_name" {
+  length  = 8
+  special = false
+  upper   = false
+}
+
 resource "proxmox_vm_qemu" "almalinux_vm" {
   count    = 1
-  name     = "zabbixvm"
+  name     = "zabbixvm-${random_string.vm_name.result}"  # Use random string for unique name
   target_node = "Debian-bookworm-latest-amd64-base"  # Proxmox node where the VM will be deployed
 
   # General VM Configuration
